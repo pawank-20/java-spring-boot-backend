@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-
 /*
 Notice how we defined a constructor here but not inside the service : 
 We explicitly wrote a constructor because the controller needs a TaskService object supplied to it. Spring creates the service and supplies it to the controller. This is dependency injection.
@@ -30,12 +28,9 @@ public class TaskController {
     @PostMapping
     // ResponseEntity lets us control HTTP status codes as well as response bodies.
 
-    public ResponseEntity<Task> create(@RequestBody Map<String, String> body) {
-        String title = body.get("title");
-        String priority = body.get("priority");
-
-        Task task = taskService.create(title, priority);
-
+    // spring will now convert the incoming req.body to TaskRequest Object
+    public ResponseEntity<Task> create(@RequestBody TaskRequest request) {
+    Task task = taskService.create(request.title, request.priority);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
@@ -56,14 +51,11 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> update(
+ public ResponseEntity<Task> update(
             @PathVariable Long id,
-            @RequestBody Map<String, String> body) {
+            @RequestBody TaskRequest request) {
 
-        String title = body.get("title");
-        String priority = body.get("priority");
-
-        Task task = taskService.update(id, title, priority);
+        Task task = taskService.update(id, request.title, request.priority);
 
         if (task == null) {
             return ResponseEntity.notFound().build();

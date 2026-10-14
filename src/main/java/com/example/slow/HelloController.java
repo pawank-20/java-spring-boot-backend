@@ -49,7 +49,7 @@ public class HelloController {
         // returns an object : {"language":"Java","message":"Hello World"}
     }
 
-    @PostMapping("/tasks")
+    @PostMapping("/hello/tasks")
     public Map<String, Object> createTask(@RequestBody Map<String, Object> task) {
         // @RequestBody tells Spring to read the incoming JSON body and convert it into a Java object—in this case, a Map.
         return Map.of(
