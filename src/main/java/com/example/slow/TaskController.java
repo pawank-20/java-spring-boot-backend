@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 /*
 Notice how we defined a constructor here but not inside the service : 
@@ -29,7 +31,7 @@ public class TaskController {
     // ResponseEntity lets us control HTTP status codes as well as response bodies.
 
     // spring will now convert the incoming req.body to TaskRequest Object
-    public ResponseEntity<Task> create(@RequestBody TaskRequest request) {
+    public ResponseEntity<Task> create(@Valid @RequestBody TaskRequest request) {
     Task task = taskService.create(request.title, request.priority);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
@@ -52,6 +54,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
  public ResponseEntity<Task> update(
+    @Valid 
             @PathVariable Long id,
             @RequestBody TaskRequest request) {
 
