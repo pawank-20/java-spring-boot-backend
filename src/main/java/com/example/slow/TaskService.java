@@ -1,60 +1,61 @@
 
 package com.example.slow;
 
-import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TaskService {
 
-    private Map<Long, Task> tasks = new HashMap<>();
-    private long nextId = 1;
-    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(TaskService.class);
+
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+        //The constructor receives TaskRepository from Spring through dependency injection. You don't instantiate the repository yourself.
+    }
 
     public Task create(String title, String priority) {
-        Task task = new Task(nextId, title, priority);
+        Task task = new Task(null, title, priority); //MongoDB generates tje ID when save() inserts the document.
+        Task savedTask = taskRepository.save(task);
 
-        tasks.put(nextId, task);
-        nextId++;
-// {} is a placeholder for a value supplied to the logger. This is preferable to concatenating strings, and the logger includes useful metadata such as severity and timestamp.
-        log.info("Created task with id {}", task.id);
-//Common levels are DEBUG for diagnostic details, INFO for normal events, WARN for unexpected situations, and ERROR for failures.
-
-log.debug("Creating task with title {}", title);
-        return task;
+        log.info("Created task with id {}", savedTask.id);
+        return savedTask; 
     }
 
     public List<Task> findAll() {
-        return new ArrayList<>(tasks.values());
-        // see notes about generics.
+        return taskRepository.findAll();
     }
 
-    public Task findById(Long id) {
-        return tasks.get(id);
+    public Task findById(String id) {
+        return taskRepository.findById(id).orElse(null);
     }
 
-    public Task update(Long id, String title, String priority) {
-        if (!tasks.containsKey(id)) {
+    public Task update(String id, String title, String priority) {
+        Task task = taskRepository.findById(id).orElse(null);
+
+        if (task == null) {
             return null;
         }
 
-        Task task = new Task(id, title, priority);
-        tasks.put(id, task);
+        task.title = title;
+        task.priority = priority;
 
-        return task;
+        return taskRepository.save(task);
+        //save(task) inserts a new document or updates the existing document when its ID is already set.
     }
 
-    public boolean delete(Long id) {
-        if (!tasks.containsKey(id)) {
+    public boolean delete(String id) {
+        if (!taskRepository.existsById(id)) {
             return false;
         }
 
-        tasks.remove(id);
+        taskRepository.deleteById(id);
         return true;
     }
 }

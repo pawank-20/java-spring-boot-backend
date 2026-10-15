@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> findById(@PathVariable Long id) {
+    public ResponseEntity<Task> findById(@PathVariable String id) {
         Task task = taskService.findById(id);
 
         if (task == null) {
@@ -55,7 +55,7 @@ public class TaskController {
     @PutMapping("/{id}")
  public ResponseEntity<Task> update(
     @Valid 
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody TaskRequest request) {
 
         Task task = taskService.update(id, request.title, request.priority);
@@ -71,7 +71,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         boolean deleted = taskService.delete(id);
 
         if (!deleted) {
