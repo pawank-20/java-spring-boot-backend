@@ -10,21 +10,34 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 
 @RestControllerAdvice
-//@RestControllerAdvice lets this class handle exceptions thrown by multiple controllers.
+// @RestControllerAdvice lets this class handle exceptions thrown by multiple
+// controllers.
 public class ApiExceptionHandler {
-//@ExceptionHandler(...) selects which exception this method handles. We're telling Spring: "When the exception type is MethodArgumentNotValidException, use this handler."
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    //The method extracts the first validation error and returns a JSON response such as {"error":"Title is required"} with status 400.
-    public ResponseEntity<Map<String, String>> handleValidation(
-            MethodArgumentNotValidException exception) {
+        // @ExceptionHandler(...) selects which exception this method handles. We're
+        // telling Spring: "When the exception type is MethodArgumentNotValidException,
+        // use this handler."
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        // The method extracts the first validation error and returns a JSON response
+        // such as {"error":"Title is required"} with status 400.
+        public ResponseEntity<Map<String, String>> handleValidation(
+                        MethodArgumentNotValidException exception) {
 
-        String message = exception.getBindingResult()
-                .getFieldErrors()
-                .get(0)
-                .getDefaultMessage();
+                String message = exception.getBindingResult()
+                                .getFieldErrors()
+                                .get(0)
+                                .getDefaultMessage();
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", message));
-    }
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(Map.of("error", message));
+        }
+
+        @ExceptionHandler(InvalidTaskIdException.class)
+        public ResponseEntity<Map<String, String>> handleInvalidTaskId(
+                        InvalidTaskIdException exception) {
+
+                return ResponseEntity
+                                .badRequest()
+                                .body(Map.of("error", exception.getMessage()));
+        }
 }

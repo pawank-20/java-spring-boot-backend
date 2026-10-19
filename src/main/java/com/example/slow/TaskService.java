@@ -20,6 +20,11 @@ public class TaskService {
         //The constructor receives TaskRepository from Spring through dependency injection. You don't instantiate the repository yourself.
     }
 
+    private void validateId(String id) {
+    if (id == null || !id.matches("[0-9a-fA-F]{24}")) {
+        throw new InvalidTaskIdException(id);
+    }
+}
     public Task create(String title, String priority) {
         Task task = new Task(null, title, priority); //MongoDB generates tje ID when save() inserts the document.
         Task savedTask = taskRepository.save(task);
@@ -33,10 +38,12 @@ public class TaskService {
     }
 
     public Task findById(String id) {
+        validateId(id);
         return taskRepository.findById(id).orElse(null);
     }
 
     public Task update(String id, String title, String priority) {
+         validateId(id);
         Task task = taskRepository.findById(id).orElse(null);
 
         if (task == null) {
@@ -51,6 +58,7 @@ public class TaskService {
     }
 
     public boolean delete(String id) {
+         validateId(id);
         if (!taskRepository.existsById(id)) {
             return false;
         }
