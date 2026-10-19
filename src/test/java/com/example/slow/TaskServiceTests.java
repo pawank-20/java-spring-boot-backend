@@ -15,13 +15,13 @@ class TaskServiceTests {
 
         TaskService service = new TaskService(repository);
 
-        Task saved = new Task("test-id", "Learn Java", "High");
+        Task saved = new Task("507f1f77bcf86cd799439011", "Learn Java", "High");
 
         org.mockito.Mockito.when(repository.save(
                 org.mockito.ArgumentMatchers.any(Task.class)))
                 .thenReturn(saved);
 
-        org.mockito.Mockito.when(repository.findById("test-id"))
+        org.mockito.Mockito.when(repository.findById("507f1f77bcf86cd799439011"))
                 .thenReturn(java.util.Optional.of(saved));
 
         Task created = service.create("Learn Java", "High");
@@ -39,10 +39,10 @@ class TaskServiceTests {
 
         TaskService service = new TaskService(repository);
 
-        org.mockito.Mockito.when(repository.findById("missing-id"))
+        org.mockito.Mockito.when(repository.findById("507f1f77bcf86cd799439012"))
                 .thenReturn(java.util.Optional.empty());
 
-        Task found = service.findById("missing-id");
+        Task found = service.findById("507f1f77bcf86cd799439012");
 
         assertNull(found);
     }
