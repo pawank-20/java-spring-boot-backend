@@ -10,18 +10,22 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 @SpringBootTest //@SpringBootTest loads the application for testing.
 @AutoConfigureMockMvc
+// @WithMockUser //This supplies a fake authenticated user for those tests. It does not test JWT validation itself; we'll test the actual token flow separately.
 class TaskControllerTests {
 
     @Autowired //asks Spring to supply the MockMvc object.
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser
     void createsTaskThroughHttp() throws Exception {
         // mockMvc.perform(...) sends a simulated request.
-        mockMvc.perform(post("/tasks")
+        mockMvc.perform(post("/tasks").with(user("test-user"))
                 .contentType("application/json")
                 .content("""
                     {
@@ -36,8 +40,9 @@ class TaskControllerTests {
     }
 
     @Test
+    @WithMockUser
     void rejectsTaskWithoutTitle() throws Exception {
-        mockMvc.perform(post("/tasks")
+        mockMvc.perform(post("/tasks").with(user("test-user"))
                 .contentType("application/json")
                 .content("""
                     {
@@ -48,3 +53,4 @@ class TaskControllerTests {
                 .andExpect(jsonPath("$.error").value("Title is required"));
     }
 }
+

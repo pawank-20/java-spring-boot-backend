@@ -1,6 +1,7 @@
 # Understanding the code
 ## Setup Instructions 
 - To run the project : `.\mvnw.cmd spring-boot:run`
+- To run the tests : `.\mvnw.cmd test`
 
 
 ### understanding the project strucutre.
