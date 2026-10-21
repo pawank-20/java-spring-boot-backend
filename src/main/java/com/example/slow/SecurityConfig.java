@@ -16,6 +16,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; //add a BCrypt password encoder bean
@@ -60,17 +62,29 @@ public class SecurityConfig {
     // SecurityFilterChain defines which requests are public and which require
     // authentication. /auth/** is public so users can register and log in; other
     // routes require a valid JWT.
-    SecurityFilterChain securityFilterChain(HttpSecurity http)
+
+    // Because browsers automatically attach cookies, another website could
+    // potentially trick a logged-in browser into sending a request. CSRF protection
+    // requires a separate token for state-changing requests.
+
+    SecurityFilterChain securityFilterChain(HttpSecurity http, CookieJwtBearerTokenResolver cookieTokenResolver)
             throws Exception {
+        // This creates a separate XSRF-TOKEN cookie. Unlike the JWT cookie, this cookie
+        // is intentionally readable by the client so it can send the token in an
+        // X-XSRF-TOKEN request header.
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // STATELESS tells Spring not to
                                                                                  // maintain a server-side login session
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth -> oauth
+                        .bearerTokenResolver(cookieTokenResolver)
+                        .jwt(Customizer.withDefaults()));
         // oauth2ResourceServer(...jwt...) activates Spring Security's built-in JWT
         // verification. It checks the token before the request reaches your controller.
 

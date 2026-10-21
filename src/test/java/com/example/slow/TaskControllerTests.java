@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import org.springframework.security.test.context.support.WithMockUser;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @SpringBootTest //@SpringBootTest loads the application for testing.
 @AutoConfigureMockMvc
@@ -25,7 +25,7 @@ class TaskControllerTests {
     @WithMockUser
     void createsTaskThroughHttp() throws Exception {
         // mockMvc.perform(...) sends a simulated request.
-        mockMvc.perform(post("/tasks").with(user("test-user"))
+        mockMvc.perform(post("/tasks").with(csrf())
                 .contentType("application/json")
                 .content("""
                     {
@@ -42,7 +42,7 @@ class TaskControllerTests {
     @Test
     @WithMockUser
     void rejectsTaskWithoutTitle() throws Exception {
-        mockMvc.perform(post("/tasks").with(user("test-user"))
+        mockMvc.perform(post("/tasks").with(csrf())
                 .contentType("application/json")
                 .content("""
                     {
