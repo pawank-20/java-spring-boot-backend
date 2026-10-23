@@ -76,6 +76,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+                        //This creates a separate XSRF-TOKEN cookie. Unlike the JWT cookie, this cookie is intentionally readable by the client so it can send the token in an X-XSRF-TOKEN request header.
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // STATELESS tells Spring not to
                                                                                  // maintain a server-side login session
