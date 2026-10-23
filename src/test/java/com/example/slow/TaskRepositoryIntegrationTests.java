@@ -60,7 +60,7 @@ class TaskRepositoryIntegrationTests {
 
     @Test
     void savesAndFindsTask() {
-        Task task = new Task(null, "Learn MongoDB", "High");
+        Task task = new Task(null, "Learn MongoDB", "High", "alice");
 
         Task saved = repository.save(task);
 
@@ -76,7 +76,7 @@ class TaskRepositoryIntegrationTests {
     @Test
     void updatesAndDeletesTask() {
         Task task = repository.save(
-                new Task(null, "Original title", "Low"));
+                new Task(null, "Original title", "Low", "alice"));
 
         task.title = "Updated title";
         repository.save(task);

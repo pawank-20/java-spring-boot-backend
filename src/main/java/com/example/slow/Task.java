@@ -10,13 +10,19 @@ public class Task{
 public String id; // changed id from Long to String. MongoDB normally generates an ObjectId, which is represented as a string in our API. We no longer need AtomicLong to generate IDs.
 public String title;
 public String priority;
+ public String ownerUsername;
 // The no-argument constructor Task() {} allows Spring to create an empty Task when reading data from MongoDB.
 public Task(){
 
 }
-public Task ( String id,String title, String priority){
-    this.id=id;
-    this.title=title;
-    this.priority=priority;
-}
+ public Task(
+            String id,
+            String title,
+            String priority,
+            String ownerUsername) {
+        this.id = id;
+        this.title = title;
+        this.priority = priority;
+        this.ownerUsername = ownerUsername;
+    }
 }

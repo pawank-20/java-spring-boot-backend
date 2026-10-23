@@ -1,9 +1,15 @@
 
 package com.example.slow;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface TaskRepository extends MongoRepository<Task, String> {
+    List<Task> findAllByOwnerUsername(String ownerUsername);
+
+    Optional<Task> findByIdAndOwnerUsername(String id, String ownerUsername);
 }
 /*An interface defines a set of operations without implementing them itself. Here, Spring Data supplies the implementation for us.
 MongoRepository<Task, String> means:
