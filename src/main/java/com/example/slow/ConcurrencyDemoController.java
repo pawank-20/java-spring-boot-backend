@@ -2,15 +2,26 @@
 package com.example.slow;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class ConcurrencyDemoController {
     // throws InterruptedException declares that the sleep can be interrupted. Java
     // requires us to handle or declare this possibility.
 
+    /*
+     * AtomicInteger provides thread-safe operations. incrementAndGet() increments
+     * the value as one atomic operation, so concurrent increments won't overwrite
+     * each other.
+     * 
+     * For a real application, though, don't use an in-memory counter for important
+     * business data. It resets when the application restarts and isn't shared
+     * across multiple application instances.
+     */
     @GetMapping("/debug/slow")
     public Map<String, String> slowRequest() throws InterruptedException {
         String threadName = Thread.currentThread().getName();
@@ -22,17 +33,12 @@ public class ConcurrencyDemoController {
                 "thread", threadName);
     }
 
-    private int requestCount = 0;
+    private final AtomicInteger requestCount = new AtomicInteger(0);
 
-    /*
-    With ordinary sequential requests, you should see 1, 2, 3, and so on. The problem appears when requests execute concurrently: requestCount++ is not one indivisible operation. Two threads can read the same old value, increment it independently, and overwrite one another's updates.
-    */
     @GetMapping("/debug/counter")
     public Map<String, Integer> counter() {
-        requestCount++;
-        return Map.of("count", requestCount);
+        int count = requestCount.incrementAndGet();
+        return Map.of("count", count);
     }
-
-    
 
 }
