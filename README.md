@@ -139,3 +139,15 @@ Where the JWT is checked: Spring's BearerTokenAuthenticationFilter, which .oauth
 It calls CookieJwtBearerTokenResolver.java to read the ACCESS_TOKEN cookie.
 It passes the token to your JwtDecoder bean, which checks the HS256 signature and the expiry time.
 A missing, tampered or expired token gets a 401.
+
+---
+### Health Check Endpoints : 
+-http://localhost:8080/actuator/health
+-http://localhost:8080/actuator/health/liveness
+-http://localhost:8080/actuator/health/readiness
+-http://localhost:8080/actuator/info
+-http://localhost:8080/actuator/metrics
+
+Because you use Spring Data MongoDB, Actuator automatically includes a MongoDB health check.
+That means if MongoDB becomes unavailable, your health endpoint can report DOWN.
+

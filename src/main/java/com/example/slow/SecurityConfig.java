@@ -80,10 +80,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // STATELESS tells Spring not to
                                                                                  // maintain a server-side login session
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/error", "/v3/api-docs/**",
-                                       "/swagger-ui/**",
-                                        "/swagger-ui.html").permitAll()
+                        .authorizeHttpRequests(auth -> auth
+                                        .requestMatchers("/auth/**", "/error", "/v3/api-docs/**",
+                                                        "/swagger-ui/**",
+                                                        "/swagger-ui.html", "/actuator/health",
+                                                        "/actuator/health/**")
+                                        .permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
                         .bearerTokenResolver(cookieTokenResolver)
