@@ -7,6 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.time.Duration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -14,6 +17,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "User registration and login")
 public class AuthController {
 
     private final AuthService authService;

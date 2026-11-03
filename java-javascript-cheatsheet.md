@@ -37,10 +37,10 @@ final String name = "Pawan";
 Java primitives:
 
 ```java
-int
-long
-double
-float
+int ( 4 bytes )
+long ( 8 bytes )
+double (8 bytes , decimal )
+float ( 4 bytes , decimal requires f example : 0.3f)
 boolean
 char
 ```
@@ -269,6 +269,7 @@ const result = numbers
 Java:
 
 ```java
+ List<Integer> numbers = new ArrayList<>(List.of(1, 2, 3, 4));
 List<Integer> result = numbers.stream()
     .filter(n -> n > 2)
     .map(n -> n * 2)
@@ -756,6 +757,9 @@ Map<String, Integer> ages = new HashMap<>();
 ### Loop
 
 ```java
+for (dataType element : arrayOrCollection) {
+    // Code block to be executed
+}
 for (User user : users) {
     System.out.println(user.getName());
 }

@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
-
-
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 
 /*
@@ -18,10 +20,10 @@ If we instead wrote new TaskService() inside the controller, the controller woul
 
 */
 
-
 /*
 Authentication is provided by Spring Security for an authenticated request. Because your JWT subject is the username, authentication.getName() returns that username. The client cannot choose another owner simply by changing the JSON body.
 */
+@Tag(name = "Tasks", description = "Task management endpoints")
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -39,6 +41,13 @@ public class TaskController {
     // ResponseEntity lets us control HTTP status codes as well as response bodies.
 
     // spring will now convert the incoming req.body to TaskRequest Object
+    @Operation(summary = "Create a task", description = "Creates a task owned by the currently authenticated user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Task created"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated")
+    })
+
     public ResponseEntity<Task> create(@Valid @RequestBody TaskRequest request, Authentication authentication) {
         Task task = taskService.create(request.title, request.priority, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
